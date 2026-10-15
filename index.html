@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MP UADD | Building Permission Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="gov-header">
+    <div class="emblem">🏛️</div>
+    <div class="gov-title">
+      <h1>Urban Administration & Development Department</h1>
+      <p>Government of Madhya Pradesh</p>
+    </div>
+    <div class="gov-right">
+      <span>ABPAS 3.0</span>
+      <span>Building Permission Dashboard</span>
+    </div>
+  </header>
+
+  <div class="step-wrap">
+    <div class="step-item active" id="stepTab1">
+      <div class="step-circle">1</div>
+      <div class="step-label">Property Location</div>
+    </div>
+    <div class="step-line" id="stepLine"></div>
+    <div class="step-item" id="stepTab2">
+      <div class="step-circle">2</div>
+      <div class="step-label">Property Details & Fee</div>
+    </div>
+  </div>
+
+  <main class="container">
+
+    <!-- ================= PAGE 1 ================= -->
+    <section id="page1" class="page active">
+      <h2 class="page-title">Property Location Details</h2>
+      <p class="page-sub">Select district, ULB, ward and colony. Rates auto-picked from 2026-27 guideline.</p>
+
+      <div class="card">
+        <div class="grid">
+          <div class="form-group full"><label>District</label><select id="district"></select></div>
+          <div class="form-group full"><label>Urban Local Body</label><select id="urbanBody"></select></div>
+          <div class="form-group full"><label>Zone</label><select id="zone"></select></div>
+          <div class="form-group full"><label>Ward</label><select id="ward"></select></div>
+          <div class="form-group full"><label>Colony / Locality (Guideline Sthan)</label><select id="colony"></select></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" onclick="goToPage2()">Next →</button>
+      </div>
+    </section>
+
+    <!-- ================= PAGE 2 ================= -->
+    <section id="page2" class="page">
+      <h2 class="page-title">Property Details & Fee</h2>
+      <p class="page-sub">Enter plot and building details. Fee auto-calculated as per rules.</p>
+
+      <div class="summary-box">
+        <div><span>District:</span> <b id="sumDistrict">—</b></div>
+        <div><span>ULB:</span> <b id="sumBody">—</b></div>
+        <div><span>Zone:</span> <b id="sumZone">—</b></div>
+        <div><span>Ward:</span> <b id="sumWard">—</b></div>
+        <div><span>Colony:</span> <b id="sumColony">—</b></div>
+      </div>
+
+      <!-- Guideline Rates (auto) -->
+      <div class="card rate-card">
+        <h3 class="card-title">Guideline Rates (₹ per sq.m) — Auto-picked</h3>
+        <div class="grid">
+          <div class="form-group"><label>Plot — Residential</label><input type="text" id="rate_plotRes" readonly></div>
+          <div class="form-group"><label>Plot — Commercial</label><input type="text" id="rate_plotCom" readonly></div>
+          <div class="form-group"><label>Residential — RCC</label><input type="text" id="rate_rcc" readonly></div>
+          <div class="form-group"><label>Residential — RBC</label><input type="text" id="rate_rbc" readonly></div>
+          <div class="form-group"><label>Residential — Tin Shed</label><input type="text" id="rate_tin" readonly></div>
+          <div class="form-group"><label>Residential — Kachcha Kavelu</label><input type="text" id="rate_kachcha" readonly></div>
+          <div class="form-group"><label>Commercial — Shop</label><input type="text" id="rate_shop" readonly></div>
+          <div class="form-group"><label>Commercial — Office</label><input type="text" id="rate_office" readonly></div>
+          <div class="form-group"><label>Commercial — Godown</label><input type="text" id="rate_godown" readonly></div>
+        </div>
+      </div>
+
+      <!-- Property Area -->
+      <div class="card">
+        <h3 class="card-title">Property Area</h3>
+        <div class="grid">
+          <div class="form-group">
+            <label>Plot Width (Feet) ✏️</label>
+            <input type="number" id="plotWidthFt" value="0" step="0.01">
+          </div>
+          <div class="form-group">
+            <label>Plot Length (Feet) ✏️</label>
+            <input type="number" id="plotLengthFt" value="0" step="0.01">
+          </div>
+        </div>
+        <div class="grid" style="margin-top:14px;">
+          <div class="form-group"><label>Plot Width (Meter)</label><input type="number" id="plotWidthM" readonly step="0.01"></div>
+          <div class="form-group"><label>Plot Length (Meter)</label><input type="number" id="plotLengthM" readonly step="0.01"></div>
+          <div class="form-group"><label>Gross Area (Sq. Feet)</label><input type="number" id="grossAreaFt" readonly step="0.01"></div>
+          <div class="form-group"><label>Gross Area (Sq. Meter)</label><input type="number" id="grossArea" readonly step="0.01"></div>
+          <div class="form-group"><label>Net Plot Area (Sq. Meter)</label><input type="number" id="netArea" readonly step="0.01"></div>
+        </div>
+      </div>
+
+      <!-- Building Requirement -->
+      <div class="card">
+        <h3 class="card-title">Building Requirement</h3>
+        <div class="grid">
+          <div class="form-group">
+            <label>Land Use ✏️</label>
+            <select id="landUse">
+              <option value="Residential">Residential</option>
+              <option value="Commercial zone">Commercial Zone</option>
+              <option value="Industrial">Industrial</option>
+              <option value="Mixed">Mixed Use</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Building Use ✏️</label>
+            <select id="buildingUse">
+              <option value="Residential">Residential</option>
+              <option value="Mercantile">Mercantile / Shop</option>
+              <option value="Office">Office</option>
+              <option value="Godown">Godown</option>
+              <option value="Industrial">Industrial</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Building Activity ✏️</label>
+            <select id="activity">
+              <option value="Erect">Erect (New Construction)</option>
+              <option value="Alteration & Addition">Alteration & Addition</option>
+              <option value="Compounding">Compounding</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Building Structure Type ✏️</label>
+            <select id="structure">
+              <option value="RCC">RCC</option>
+              <option value="RBC">RBC</option>
+              <option value="Tin Shed">Tin Shed</option>
+              <option value="Kachcha Kavelu">Kachcha Kavelu</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Proposed Built-up (FAR) Area (sq.m) ✏️</label>
+            <input type="number" id="proposedArea" value="0" step="0.01">
+          </div>
+
+          <div class="form-group">
+            <label>Non-FAR Area (sq.m) (auto)</label>
+            <input type="number" id="nonFARArea" readonly step="0.01">
+          </div>
+
+          <div class="form-group">
+            <label>Total Slab Area (sq.m) (auto)</label>
+            <input type="number" id="slabArea" readonly step="0.01">
+          </div>
+
+          <div class="form-group">
+            <label>Proposed Floors ✏️</label>
+            <input type="number" id="floors" value="0" min="0" step="1">
+          </div>
+
+          <div class="form-group"><label>Permissible FAR (auto)</label><input type="number" id="permFAR" readonly step="0.01"></div>
+          <div class="form-group"><label>Consumed FAR ✏️</label><input type="number" id="consFAR" value="0" step="0.01"></div>
+          <div class="form-group"><label>Total Permissible Built-up (sq.m) (auto)</label><input type="number" id="totalPerm" readonly step="0.01"></div>
+          <div class="form-group"><label>Proposed Ground Coverage (%) ✏️</label><input type="number" id="propCoverage" value="0" step="0.01"></div>
+        </div>
+      </div>
+
+      <!-- Collector Rate (auto) -->
+      <div class="card rate-card">
+        <h3 class="card-title">Karmkar Construction Rate (Auto-derived)</h3>
+        <div class="grid">
+          <div class="form-group"><label>Building Rate Used (₹/sq.m)</label><input type="number" id="buildingRCC" readonly></div>
+          <div class="form-group"><label>Plot Rate Used (₹/sq.m)</label><input type="number" id="plotRes" readonly></div>
+          <div class="form-group full">
+            <label>Estimated Construction Rate (₹/sq.m)</label>
+            <input type="number" id="estimatedRate" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goToPage1()">← Back</button>
+        <button class="btn-primary" onclick="calculateRequirements()">Calculate Fee</button>
+      </div>
+
+      <div id="requirementResult" class="result-box" style="display:none;"></div>
+      <div id="feeResult" class="result-box" style="display:none;"></div>
+    </section>
+
+  </main>
+
+  <footer class="gov-footer">
+    © 2026 Urban Administration & Development Department, Government of Madhya Pradesh | ABPAS 3.0
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
